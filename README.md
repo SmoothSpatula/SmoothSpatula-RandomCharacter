@@ -1,5 +1,6 @@
 # SmoothSpatula-RollRandomCharacter
 Rolls a random character every time you start a game.
+You can set the roll speed in the ImGui menu.
 
 ---
 
