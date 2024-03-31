@@ -1,4 +1,4 @@
--- RollRandomCharacter v1.0.0
+-- RandomCharacter v1.0.0
 -- SmoothSpatula
 Helper = require("./helper")
 
