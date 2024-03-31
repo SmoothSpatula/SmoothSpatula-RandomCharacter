@@ -1,5 +1,5 @@
 ﻿{
-	"name": "RollRandomCharacter",
+	"name": "RandomCharacter",
 	"version_number": "1.0.0",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RollRandomCharacter",
 	"description": "Rolls a random character every time you enter a lobby.",
