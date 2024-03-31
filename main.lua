@@ -25,7 +25,7 @@ end)
 
 -- ========== Utils ==========
 
--- selects the character with to the specified id
+-- selects the character with the specified id
 function set_char(sMenu, id)
     if Helper.does_instance_exist(sMenu) then
         gm.call(sMenu.set_choice.script_name, sMenu, sMenu, id)
