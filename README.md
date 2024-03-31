@@ -1,4 +1,4 @@
-# SmoothSpatula-RollRandomCharacter
+# SmoothSpatula-RandomCharacter
 Rolls a random character every time you enter a lobby.
 
 You can set the roll speed in the ImGui menu.
