@@ -1,7 +1,7 @@
 # SmoothSpatula-RandomCharacter
-Rolls a random character every time you enter a lobby.
+Rolls a random character, skills and skin every time you enter a lobby.
 
-You can set the roll speed in the ImGui menu.
+You can set the mod options via ImGui ("INSERT" key) or by editing `ReturnOfModding/config/RandomCharacter/cfg.toml`.
 
 ---
 
