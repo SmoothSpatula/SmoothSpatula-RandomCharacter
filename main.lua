@@ -1,4 +1,4 @@
--- RandomCharacter v1.0.1
+-- RandomCharacter v1.0.2
 -- SmoothSpatula
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
 
@@ -57,7 +57,7 @@ end)
 
 -- selects the character with the specified id
 function set_char(sMenu, id)
-    if Helper.does_instance_exist(sMenu) then
+    if Helper.instance_exist(sMenu) then
         gm.call(sMenu.set_choice.script_name, sMenu, sMenu, id)
     end
 end
@@ -105,13 +105,13 @@ local end_choice = 0
 gm.pre_script_hook(gm.constants._ui_draw_button, function()
     if not params['enabled'] then return end
     local sMenu = Helper.find_active_instance(gm.constants.oSelectMenu)
-    if Helper.does_instance_exist(sMenu) and choice_set <= end_choice then
+    if Helper.instance_exist(sMenu) and choice_set <= end_choice then
         choice_set = choice_set + 1
         if choice_set%params['animation_delay'] == 0 then
             set_char(sMenu, choice_set/params['animation_delay'])
         end
     end
-    if Helper.does_instance_exist(sMenu) and choice_set == end_choice +1 then
+    if Helper.instance_exist(sMenu) and choice_set == end_choice +1 then
         choice_set = choice_set + 1
         local chosen_survivor = gm.variable_global_get("class_survivor")[end_choice/params['animation_delay']+1]
         if params['randomize_skins'] then Menu.choice_loadout.family_choice_index.skin = math.random(0,3) end
