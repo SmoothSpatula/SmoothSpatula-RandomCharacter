@@ -13,7 +13,7 @@ This mod depends on the [Return Of Modding](https://github.com/return-of-modding
 
   
 ## Special Thanks To
-* Darkener on The RoRR Modding Server for suggesting this idea
+* Darkener and Molk on The RoRR Modding Server for suggesting this idea
 * [Klehrik](https://github.com/Klehrik) for the help
 * The Return Of Modding team
 
