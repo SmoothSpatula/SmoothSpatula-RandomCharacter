@@ -1,9 +1,10 @@
 ﻿{
 	"name": "RandomCharacter",
-	"version_number": "1.0.0",
+	"version_number": "1.0.1",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RandomCharacter",
-	"description": "Rolls a random character every time you enter a lobby.",
+	"description": "Rolls a random character, skills and skin every time you enter a lobby.",
 	"dependencies": [
-		"ReturnOfModding-ReturnOfModding-1.0.0"
+		"ReturnOfModding-ReturnOfModding-1.0.0",
+		"SmoothSpatula-TomlHelper-1.0.0"
 	]
 }
