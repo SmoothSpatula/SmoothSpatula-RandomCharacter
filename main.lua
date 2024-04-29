@@ -1,4 +1,4 @@
--- RandomCharacter v1.0.3
+-- RandomCharacter v1.0.4
 -- SmoothSpatula
 mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
 
@@ -25,31 +25,40 @@ gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Enable Character Roll", params['enabled'])
     if clicked then
         params['enabled'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Randomize chosen skills", params['randomize_skills'])
     if clicked then
         params['randomize_skills'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("You can get locked skills", params['overwrite_locked_skills'])
     if clicked then
         params['overwrite_locked_skills'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 gui.add_to_menu_bar(function()
     local new_value, clicked = ImGui.Checkbox("Randomize Skin", params['randomize_skin'])
     if clicked then
         params['randomize_skin'] = new_value
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 
 gui.add_to_menu_bar(function()
     local new_value, isChanged = ImGui.InputInt("Set animation delay", params['animation_delay'], 1, 2, 0)
     if isChanged then
-        params['animation_delay'] = new_value
+        if new_value >= 2 then
+            params['animation_delay'] = new_value
+        else
+            params['animation_delay'] = 2
+        end
+        Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 
@@ -69,7 +78,7 @@ function choose_rand_char()
     local is_hidden = true
     local rand_id = nil
     repeat
-        rand_id = math.random(1, max_survivor_id)
+        rand_id = math.random(0, max_survivor_id)
         random_survivor = gm.variable_global_get("class_survivor")[rand_id +1]
         if random_survivor then
             if random_survivor[26] then
