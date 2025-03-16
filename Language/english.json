@@ -1,0 +1,33 @@
+{
+	"skill" : {
+		"RandomCharacterZ" : {
+			"name" : "",
+			"description" : ""
+		},
+		"RandomCharacterX" : {
+			"name" : "",
+			"description" : ""
+        },
+        "RandomCharacterC" : {
+			"name" : "",
+			"description" : ""
+		},
+		"RandomCharacterV" : {
+			"name" : "",
+			"description" : ""
+		}
+	},
+
+	"survivor" : {
+		"RandomCharacter" : {
+			"endQuote" : "?",
+			"description" : "Roll a <#b4202e> random character </c>, with <#b4202e>random skills</c> and a <#b4202e>random skin</c>. You can change what gets rolled in the <#d4a400>ImGui settings [-Insert Key-]</c>.",
+			"name" :  "Random",
+			"nameUpper" : "RANDOM",
+			"story" : "???",
+            "id" : "???",
+            "departure"  : "???",
+            "arrival" : "???"
+		}
+	}
+}

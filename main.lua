@@ -1,12 +1,14 @@
--- RandomCharacter v1.0.4
+-- RandomCharacter v1.1.0
 -- SmoothSpatula
-mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.hfuncs then Helper = v end end end)
+
+mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
+require("randomChar.lua")
 
 -- ========== Parameters ==========
 
 local max_survivor_id = 15
 local params = {
-    enabled  = true,
+    enabled  = false,
     randomize_skills = true,
     randomize_skin = true,
     overwrite_locked_skills = false,
@@ -22,14 +24,14 @@ end end end)
 -- ========== ImGui ==========
 
 gui.add_to_menu_bar(function()
-    local new_value, clicked = ImGui.Checkbox("Enable Character Roll", params['enabled'])
+    local new_value, clicked = ImGui.Checkbox("Roll character on startup", params['enabled'])
     if clicked then
         params['enabled'] = new_value
         Toml.save_cfg(_ENV["!guid"], params)
     end
 end)
 gui.add_to_menu_bar(function()
-    local new_value, clicked = ImGui.Checkbox("Randomize chosen skills", params['randomize_skills'])
+    local new_value, clicked = ImGui.Checkbox("Randomize skills", params['randomize_skills'])
     if clicked then
         params['randomize_skills'] = new_value
         Toml.save_cfg(_ENV["!guid"], params)
@@ -51,7 +53,7 @@ gui.add_to_menu_bar(function()
 end)
 
 gui.add_to_menu_bar(function()
-    local new_value, isChanged = ImGui.InputInt("Set animation delay", params['animation_delay'], 1, 2, 0)
+    local new_value, isChanged = ImGui.InputInt("Set animation delay ", params['animation_delay'], 1, 2, 0)
     if isChanged then
         if new_value >= 2 then
             params['animation_delay'] = new_value
@@ -66,69 +68,114 @@ end)
 
 -- selects the character with the specified id
 function set_char(sMenu, id)
-    if Helper.instance_exists(sMenu) then
-        gm.call(sMenu.set_choice.script_name, sMenu, sMenu, id)
+    if sMenu:exists() then
+        gm.call(sMenu.value.set_choice.script_name, sMenu.value, sMenu.value, id)
     end
 end
 
 -- selects a random character that is unlocked and not hidden
 function choose_rand_char()
-    local random_survivor = nil
+    local survivor = nil
     local is_unlocked = false
     local is_hidden = true
     local rand_id = nil
     repeat
         rand_id = math.random(0, max_survivor_id)
-        random_survivor = gm.variable_global_get("class_survivor")[rand_id +1]
-        if random_survivor then
-            if random_survivor[26] then
-                is_unlocked = gm.achievement_is_unlocked(random_survivor[26])
+        survivor = gm.variable_global_get("class_survivor")[rand_id +1]
+        if survivor then
+            if survivor[26] then
+                is_unlocked = gm.achievement_is_unlocked(survivor[26])
             else is_unlocked = true end
-            is_hidden = random_survivor[33]
+            is_hidden = survivor[33]
         end
-    until random_survivor and is_unlocked and not is_hidden
+    until survivor and is_unlocked and not is_hidden
     return rand_id
 end
 
-function choose_rand_skill(random_survivor, skill_slot) 
-    local possible_skills = {}
-    local i = 1
-    while random_survivor[7+skill_slot].elements[i] ~= nil do
+-- selects skills
+function choose_rand_skill(survivor, skill_slot) 
+    local skill = gm.array_get(survivor, 6+skill_slot)
+    local count = gm.array_length(skill.elements)
+    if count <=1 then return 0 end
+    local rand_skill = nil
+    repeat 
+        rand_skill = math.random(0, count-1)
+    until gm.array_get(skill.elements, rand_skill).achievement_id == -1.0 or 
+        params['overwrite_locked_skills'] or 
+        gm.achievement_is_unlocked(gm.array_get(skill.elements, rand_skill).achievement_id)
+    return rand_skill
+end
 
-        if random_survivor[7+skill_slot].elements[i].achievement_id == -1.0 or params['overwrite_locked_skills']
-        then
-            possible_skills[#possible_skills+1]=i
-        elseif gm.achievement_is_unlocked(random_survivor[7+skill_slot].elements[i].achievement_id) then
-            possible_skills[#possible_skills+1]=i
-        end
-        i = i + 1
-    end
-    return possible_skills[math.random(#possible_skills)]
+-- selects a skin
+function choose_rand_skin(survivor)
+    local skin_family = gm.array_get(survivor, 10)
+    local count = gm.array_length(skin_family.elements)
+    if count <= 1 then return 0 end
+    local rand_skin = nil
+    repeat 
+        rand_skin = math.random(0, count-1)
+    until gm.array_get(skin_family.elements, rand_skin).achievement_id == -1 or 
+        gm.achievement_is_unlocked(gm.array_get(skin_family.elements, rand_skin).achievement_id)
+    return rand_skin
 end
 
 -- ========== Main ==========
+local random_id = 0
+function init()
+    local sdl = gm.variable_global_get("survivor_display_list")
+    local size = gm.ds_list_size(sdl)
+    local survivors = gm.variable_global_get("class_survivor")
+    -- get the Random survivor id
+    for i=0, gm.array_length(survivors) do 
+        if survivors[i+1] and survivors[i+1][1] == "Random" then
+            random_id = i
+        end
+    end
+    -- if it is not the last survivor in the display_list, make it last
+    if random_id < size-1 then
+        gm.ds_list_delete(sdl, random_id)
+        gm.ds_list_add(sdl, random_id)
+    end
+    max_survivor_id = size - 2
+end
+
+Initialize(init, true)
 
 local choice_set = 0
 local end_choice = 0
 -- plays the roll animation
 gm.pre_script_hook(gm.constants._ui_draw_button, function()
-    if not params['enabled'] then return end
-    local sMenu = Helper.find_active_instance(gm.constants.oSelectMenu)
-    if Helper.instance_exists(sMenu) and choice_set <= end_choice then
-        choice_set = choice_set + 1
-        if choice_set%params['animation_delay'] == 0 then
-            set_char(sMenu, choice_set/params['animation_delay'])
+    local sMenu = Instance.find(gm.constants.oSelectMenu)
+    if sMenu:exists() then
+        
+        if choice_set <= end_choice then
+            if choice_set + 1 == random_id * params['animation_delay'] then
+                choice_set = choice_set + params['animation_delay']
+            end
+            choice_set = choice_set + 1
+            if choice_set%params['animation_delay'] == 0 then
+                set_char(sMenu, choice_set/params['animation_delay'])
+            end
         end
-    end
-    if Helper.instance_exists(sMenu) and choice_set == end_choice +1 then
-        choice_set = choice_set + 1
-        local chosen_survivor = gm.variable_global_get("class_survivor")[end_choice/params['animation_delay']+1]
-        if params['randomize_skins'] then Menu.choice_loadout.family_choice_index.skin = math.random(0,3) end
-        if params['randomize_skills'] then 
-            sMenu.choice_loadout.family_choice_index.skill0 = choose_rand_skill(chosen_survivor, 0) - 1
-            sMenu.choice_loadout.family_choice_index.skill1 = choose_rand_skill(chosen_survivor, 1) - 1
-            sMenu.choice_loadout.family_choice_index.skill2 = choose_rand_skill(chosen_survivor, 2) - 1
-            sMenu.choice_loadout.family_choice_index.skill3 = choose_rand_skill(chosen_survivor, 3) - 1
+        if choice_set == end_choice +1 then
+            choice_set = choice_set + 1
+            local chosen_survivor = gm.variable_global_get("class_survivor")[end_choice/params['animation_delay']+1]
+
+            if params['randomize_skin'] then 
+                local skin = choose_rand_skin(chosen_survivor)
+                sMenu.choice_loadout.family_choice_index.skin = skin 
+            end
+            if params['randomize_skills'] then
+                sMenu.value.choice_loadout.family_choice_index.skill0 = choose_rand_skill(chosen_survivor, 0)
+                sMenu.value.choice_loadout.family_choice_index.skill1 = choose_rand_skill(chosen_survivor, 1)
+                sMenu.value.choice_loadout.family_choice_index.skill2 = choose_rand_skill(chosen_survivor, 2)
+                sMenu.value.choice_loadout.family_choice_index.skill3 = choose_rand_skill(chosen_survivor, 3)
+            end
+        end
+        if sMenu.value.choice == random_id then
+            choice_set = 0
+            set_char(sMenu, 0)
+            end_choice = choose_rand_char() * params['animation_delay']
         end
     end
 end)
