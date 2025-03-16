@@ -1,19 +1,17 @@
 # SmoothSpatula-RandomCharacter
-Rolls a random character, skills and skin every time you enter a lobby.
+
+Adds a random-selection survivor.
+You can turn on/off random skills and random skins.
+You can also have a roll every time you enter a lobby.
 
 You can set the mod options via ImGui ("INSERT" key) or by editing `ReturnOfModding/config/RandomCharacter/cfg.toml`.
 
 ---
-
-## Installation Instructions
-This mod depends on the [Return Of Modding](https://github.com/return-of-modding/ReturnOfModding) loader:
-1. Download the [latest Return Of Modding release](https://github.com/return-of-modding/ReturnOfModding/releases) and follow the [Manual Installation instructions](https://github.com/return-of-modding/ReturnOfModding#manual-installation) to install it.
-2. Download this mod and extract it into the `ReturnOfModding/plugins` folder.
-3. The mod should now be loaded. Enjoy!
-
   
 ## Special Thanks To
 * Darkener and Molk on The RoRR Modding Server for suggesting this idea
+* azuline for improvement ideas
+* DigBug for providing the sprites
 * [Klehrik](https://github.com/Klehrik) for the help
 * The Return Of Modding team
 
