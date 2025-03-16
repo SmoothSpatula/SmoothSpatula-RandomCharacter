@@ -1,11 +1,11 @@
 ﻿{
 	"name": "RandomCharacter",
-	"version_number": "1.0.4",
+	"version_number": "1.1.0",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RandomCharacter",
-	"description": "Rolls a random character, skills and skin every time you enter a lobby.",
+	"description": "Select the dice survivor to roll a random survivor.",
 	"dependencies": [
 		"ReturnOfModding-ReturnOfModding-1.0.0",
-		"Klehrik-HelperFunctions-1.0.4",
-		"SmoothSpatula-TomlHelper-1.0.0"
+		"SmoothSpatula-TomlHelper-1.0.0",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.0"
 	]
 }
