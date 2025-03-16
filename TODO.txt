@@ -1,3 +1,1 @@
-- Count the number of skins instead of assuming 4 skins (they can have 6+) or they can have only one if they are custom
-- Count the number of characters insted of using the default 16, in order to get custom chars (maybe add a toggle)
-- Clean up code (especially the countdown part)
+- Clean up code
