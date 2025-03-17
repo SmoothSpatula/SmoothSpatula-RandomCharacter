@@ -2,7 +2,7 @@
 -- SmoothSpatula
 
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
-require("randomChar.lua")
+require("randomChar.lua") -- load custom char 
 
 -- ========== Parameters ==========
 
@@ -68,10 +68,10 @@ end)
 
 -- selects the character with the specified id
 function set_char(sMenu, id)
-    if sMenu:exists() then
-        gm.call(sMenu.value.set_choice.script_name, sMenu.value, sMenu.value, id)
-    end
+    gm.call(sMenu.value.set_choice.script_name, sMenu.value, sMenu.value, id)
 end
+
+-- the random selection is done by generating until a correct value is found
 
 -- selects a random character that is unlocked and not hidden
 function choose_rand_char()
@@ -145,19 +145,19 @@ local choice_set = 0
 local end_choice = 0
 -- plays the roll animation
 gm.pre_script_hook(gm.constants._ui_draw_button, function()
-    local sMenu = Instance.find(gm.constants.oSelectMenu)
-    if sMenu:exists() then
+    local sMenu = Instance.find(gm.constants.oSelectMenu) -- find the selectMenu instance
+    if sMenu:exists() then -- check if we are in the selectMenu
         
-        if choice_set <= end_choice then
-            if choice_set + 1 == random_id * params['animation_delay'] then
-                choice_set = choice_set + params['animation_delay']
-            end
+        if choice_set <= end_choice then -- animation running
             choice_set = choice_set + 1
-            if choice_set%params['animation_delay'] == 0 then
+            if choice_set%params['animation_delay'] == 0 then -- change selection
+                if choice_set == random_id * params['animation_delay'] then -- skip random char
+                    choice_set = choice_set + params['animation_delay'] 
+                end
                 set_char(sMenu, choice_set/params['animation_delay'])
             end
         end
-        if choice_set == end_choice +1 then
+        if choice_set == end_choice +1 then -- ## maybe change this, or use elseif
             choice_set = choice_set + 1
             local chosen_survivor = gm.variable_global_get("class_survivor")[end_choice/params['animation_delay']+1]
 
@@ -172,7 +172,7 @@ gm.pre_script_hook(gm.constants._ui_draw_button, function()
                 sMenu.value.choice_loadout.family_choice_index.skill3 = choose_rand_skill(chosen_survivor, 3)
             end
         end
-        if sMenu.value.choice == random_id then
+        if sMenu.value.choice == random_id then -- Check if random character is selected
             choice_set = 0
             set_char(sMenu, 0)
             end_choice = choose_rand_char() * params['animation_delay']
@@ -180,7 +180,7 @@ gm.pre_script_hook(gm.constants._ui_draw_button, function()
     end
 end)
 
--- resets the animation and random character on entering lobby
+-- Roll character on startup if enabled
 gm.pre_script_hook(gm.constants.PlayerLobbyChoiceInfo, function(self, other, result, args)
     if not params['enabled'] then return end
     choice_set = 0
