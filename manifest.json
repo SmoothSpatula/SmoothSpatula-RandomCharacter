@@ -1,6 +1,6 @@
 ﻿{
 	"name": "RandomCharacter",
-	"version_number": "1.1.0",
+	"version_number": "1.1.1",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RandomCharacter",
 	"description": "Select the dice survivor to roll a random survivor.",
 	"dependencies": [

@@ -4,6 +4,8 @@ Adds a random-selection survivor.
 You can turn on/off random skills and random skins.
 You can also have a roll every time you enter a lobby.
 
+/!\ Artifact rolling coming soon /!\
+
 You can set the mod options via ImGui ("INSERT" key) or by editing `ReturnOfModding/config/RandomCharacter/cfg.toml`.
 
 ---
