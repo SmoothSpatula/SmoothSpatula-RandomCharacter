@@ -20,8 +20,8 @@ local initialise = function()--We need this to make sure the game loads before o
     end
     --#region Sprites
         local spr_skills = load_sprite("no_skill", "noSkill.png", 5, 0, 0) 
-        local spr_portrait = load_sprite("random_portrait", "portrait.jpg",1)
-        local spr_loadout = load_sprite("random_loadout", "loadout.jpg", 1, 28, 0) 
+        local spr_portrait = load_sprite("random_portrait", "portrait.png",1)
+        local spr_loadout = load_sprite("random_loadout", "loadout.png", 1, 28, 0) 
     --#endregion
 --#endregion
 
@@ -43,3 +43,6 @@ local initialise = function()--We need this to make sure the game loads before o
 
 end
 Initialize(initialise)
+
+
+-- Animation gm.ui_set_element_value("main_page_scroll", i%300) 
