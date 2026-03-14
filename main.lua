@@ -1,8 +1,9 @@
--- RandomCharacter v1.1.1
+-- RandomCharacter v1.2.0
 -- SmoothSpatula
 
-mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
+mods["SmoothSpatula-TomlHelper"].auto()
 require("randomChar.lua") -- load custom char 
+local RAPI = mods["ReturnsAPI-ReturnsAPI"].setup()
 
 -- ========== Parameters ==========
 
@@ -16,11 +17,7 @@ local params = {
     artifacts_nb = 1
 }
 
-mods.on_all_mods_loaded(function() for k, v in pairs(mods) do if type(v) == "table" and v.tomlfuncs then 
-    Toml = v
-    params = Toml.config_update(_ENV["!guid"], params)
-    Toml.save_cfg(_ENV["!guid"], params)
-end end end)
+params = Toml.config_update(_ENV["!guid"], params)
 
 -- ========== ImGui ==========
 
@@ -66,11 +63,6 @@ end)
 -- ========== Utils ==========
 
 local max_survivor_id = 15
-
--- selects the character with the specified id
-function set_char(sMenu, id)
-    gm.call(sMenu.value.set_choice.script_name, sMenu.value, sMenu.value, id)
-end
 
 function set_artifact(id)
     gm.call("gml_Script_anon_gml_Object_oSelectMenu_Create_0_200742116_gml_Object_oSelectMenu_Create_0", id)
@@ -146,7 +138,7 @@ function init()
     local survivors = gm.variable_global_get("class_survivor")
     -- get the Random survivor id
     for i=0, gm.array_length(survivors) do 
-        if survivors[i+1] and survivors[i+1][1] == "Random" then
+        if survivors[i+1] and survivors[i+1][1] == "random" then
             random_id = i
         end
     end
@@ -176,11 +168,11 @@ function init()
     -- end
 end
 
-Initialize(init, true)
+RAPI.Initialize.add(-10000, init)
 -- plays the roll animation
 gm.pre_script_hook(gm.constants._ui_draw_button, function()
-    local sMenu = Instance.find(gm.constants.oSelectMenu) -- find the selectMenu instance
-    if not sMenu:exists() then return end -- check if we are in the selectMenu
+    local sMenu = gm.instance_find(gm.constants.oSelectMenu, 0) -- find the selectMenu instance
+    if not gm.bool(gm.instance_exists(sMenu)) then return end -- check if we are in the selectMenu
 
     if is_animating=="character" then -- animation running
         anim_frame = anim_frame + 1
@@ -188,7 +180,7 @@ gm.pre_script_hook(gm.constants._ui_draw_button, function()
             if anim_frame == random_id * params['animation_delay'] then -- skip random char
                 anim_frame = anim_frame + params['animation_delay'] 
             end
-            set_char(sMenu, anim_frame/params['animation_delay'])
+            sMenu:set_choice(sMenu, anim_frame/params['animation_delay'])
         elseif anim_frame > anim_end then
             is_animating = "no"
             local chosen_survivor = gm.variable_global_get("class_survivor")[anim_end/params['animation_delay']+1]
@@ -197,14 +189,14 @@ gm.pre_script_hook(gm.constants._ui_draw_button, function()
                 sMenu.choice_loadout.family_choice_index.skin = skin 
             end
             if params['randomize_skills'] then
-                for i=0, 3 do sMenu.value.choice_loadout.family_choice_index["skill"..tostring(i)] = choose_rand_skill(chosen_survivor, i) end
+                for i=0, 3 do sMenu.choice_loadout.family_choice_index["skill"..tostring(i)] = choose_rand_skill(chosen_survivor, i) end
             end
         end
     end
-    if sMenu.value.choice == random_id and is_animating == "no" then -- Check if random character is selected
+    if sMenu.choice == random_id and is_animating == "no" then -- Check if random character is selected
         anim_frame = 0
         anim_end = choose_rand_char() * params['animation_delay'] -- roll end char
-        set_char(sMenu, 0) -- start at first char
+        sMenu:set_choice(sMenu, 0) -- start at first char
         is_animating = "character"
     end
 end)

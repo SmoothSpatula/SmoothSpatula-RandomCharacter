@@ -1,11 +1,11 @@
 ﻿{
 	"name": "RandomCharacter",
-	"version_number": "1.1.1",
+	"version_number": "1.2.0",
 	"website_url": "https://github.com/SmoothSpatula/SmoothSpatula-RandomCharacter",
 	"description": "Select the dice survivor to roll a random survivor.",
 	"dependencies": [
-		"ReturnOfModding-ReturnOfModding-1.0.0",
-		"SmoothSpatula-TomlHelper-1.0.0",
-		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.0"
+		"ReturnOfModding-ReturnOfModding-1.1.16",
+		"ReturnsAPI-ReturnsAPI-0.1.44",
+		"SmoothSpatula-TomlHelper-1.1.1"
 	]
 }
